@@ -1,0 +1,118 @@
+<!-- NAVIGATION -->
+<nav class="navbar animate-navbar">
+  <div class="nav-container">
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+      <div class="logo-mark">↗</div>
+      <span>Shortly</span>
+    </a>
+    <!-- Desktop Navigation -->
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it Works</a>
+      <a href="#about">About</a>
+    </div>
+    <!-- Navigation Actions -->
+    <div class="nav-actions">
+      <a routerLink="/login" class="login-btn">
+        Sign In
+      </a>
+      <a routerLink="/register" class="get-started-btn">
+        Get Started
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+</nav>
+<!-- Background Effects -->
+<div class="hero-background">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-blue"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <!-- LEFT SIDE -->
+  <div class="hero-content">
+    <div class="hero-badge animate-badge">
+      <span class="badge-dot"></span>
+      Smart links. Powerful possibilities.
+    </div>
+    <h1 class="animate-title">
+      Turn every long link
+      <span>into something powerful.</span>
+    </h1>
+    <p class="hero-description animate-description">
+      Create short, beautiful links that are easy to share,
+      simple to manage, and powerful enough to understand every click.
+    </p>
+    <div class="hero-actions animate-actions">
+      <button class="primary-button" type="button" (click)="scrollToShortener()">
+        Start shortening
+        <span>→</span>
+      </button>
+      <button class="secondary-button" type="button" (click)="scrollToHowItWorks()">
+        See how it works
+      </button>
+    </div>
+    <p class="hero-note animate-note">
+      No credit card required · Get started in seconds
+    </p>
+  </div>
+  <!-- RIGHT SIDE -->
+  <div class="preview-wrapper animate-preview">
+    <div class="shortener-card" id="shortener">
+      <!-- HEADER -->
+      <div class="preview-header">
+        <div class="preview-icon">
+          ↗
+        </div>
+        <div>
+          <span class="preview-label">
+            TRY IT NOW
+          </span>
+          <h2>
+            Make your link shorter.
+          </h2>
+        </div>
+      </div>
+      <!-- INPUT -->
+      <div class="url-input-container">
+        <span class="link-icon">
+          🔗
+        </span>
+        <input type="text" placeholder="Paste your long URL here..." [(ngModel)]="longUrl"
+          (keyup.enter)="shortenUrl()" />
+        <button class="shorten-button" type="button" (click)="shortenUrl()">
+          Shorten
+          <span>→</span>
+        </button>
+      </div>
+      <!-- ERROR MESSAGE -->
+      <p *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </p>
+      <!-- SUCCESS RESULT -->
+      <div *ngIf="shortUrl" class="short-url-result">
+        <div>
+          <span class="result-label">
+            Your short link
+          </span>
+          <strong>
+            {{ shortUrl }}
+          </strong>
+        </div>
+        <button type="button" class="copy-button" (click)="copyShortUrl()">
+          {{ copied ? 'Copied!' : 'Copy' }}
+        </button>
+      </div>
+      <!-- FOOTER -->
+      <div class="preview-footer">
+        <span>⚡ Fast & secure</span>
+        <span class="separator">•</span>
+        <span>No registration required</span>
+      </div>
+    </div>
+  </div>
+</section>

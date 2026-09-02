@@ -1,8 +1,21 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { RegisterRequest } from '../../models/auth/register-request.model';
+import { LoginRequest } from '../../models/auth/login-request.model';
+import { LoginResponse } from '../../models/auth/login-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
-  
+  private readonly apiUrl = 'https://localhost:7236/api/Auth';
+  constructor(private http: HttpClient){}
+
+  register(data: RegisterRequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`,data);
+  }
+  login(data: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`,data);
+  }
 }

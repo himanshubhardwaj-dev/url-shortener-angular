@@ -1,1 +1,95 @@
-<p>register works!</p>
+<div class="auth-container">
+    <div class="auth-card">
+
+        <h1>Create Account</h1>
+        <p class="subtitle">Create your account to start shortening URLs.</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+
+                <input id="firstName" type="text" formControlName="firstName" placeholder="Enter your first name" />
+
+                @if (
+                registerForm.get('firstName')?.invalid &&
+                registerForm.get('firstName')?.touched
+                ) {
+                <small class="error">First name is required.</small>
+                }
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+
+                <input id="lastName" type="text" formControlName="lastName" placeholder="Enter your last name" />
+
+                @if (registerForm.get('lastName')?.invalid &&registerForm.get('lastName')?.touched) {
+                <small class="error">Last name is required.</small>
+                }
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
+
+                @if (
+                registerForm.get('email')?.invalid &&
+                registerForm.get('email')?.touched
+                ) {
+                <small class="error">
+                    Please enter a valid email address.
+                </small>
+                }
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input id="password" type="password" formControlName="password" placeholder="Enter your password" />
+
+                @if (
+                registerForm.get('password')?.invalid &&
+                registerForm.get('password')?.touched
+                ) {
+                <small class="error">
+                    Password must be at least 6 characters.
+                </small>
+                }
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+
+                <input id="confirmPassword" type="password" formControlName="confirmPassword"
+                    placeholder="Confirm your password" />
+
+                @if (
+                registerForm.get('confirmPassword')?.invalid &&
+                registerForm.get('confirmPassword')?.touched
+                ) {
+                <small class="error">
+                    Confirm password is required.
+                </small>
+                }
+            </div>
+
+            <button type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="login-link">
+            Already have an account?
+            <a routerLink="/login">Login</a>
+        </p>
+
+    </div>
+</div>
