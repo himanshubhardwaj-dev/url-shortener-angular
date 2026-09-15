@@ -1,95 +1,107 @@
-<div class="auth-container">
-    <div class="auth-card">
+<div class="auth-page">
 
-        <h1>Create Account</h1>
-        <p class="subtitle">Create your account to start shortening URLs.</p>
+    <header class="auth-header">
+        <a routerLink="/" class="brand">
+            <span class="brand-mark">↗</span>
+            <span>Shortly</span>
+        </a>
 
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <a routerLink="/" class="back-link">
+            ← Back to home
+        </a>
+    </header>
 
-            <!-- First Name -->
-            <div class="form-group">
-                <label for="firstName">First Name</label>
 
-                <input id="firstName" type="text" formControlName="firstName" placeholder="Enter your first name" />
+    <main class="auth-content">
 
-                @if (
-                registerForm.get('firstName')?.invalid &&
-                registerForm.get('firstName')?.touched
-                ) {
-                <small class="error">First name is required.</small>
-                }
+        <section class="auth-card">
+
+            <div class="auth-icon">
+                +
             </div>
 
-            <!-- Last Name -->
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
+            <span class="auth-label">
+                GET STARTED
+            </span>
 
-                <input id="lastName" type="text" formControlName="lastName" placeholder="Enter your last name" />
+            <h1>
+                Create your account.
+            </h1>
 
-                @if (registerForm.get('lastName')?.invalid &&registerForm.get('lastName')?.touched) {
-                <small class="error">Last name is required.</small>
-                }
-            </div>
+            <p class="auth-description">
+                Start creating short, powerful links and understand
+                how your audience interacts with them.
+            </p>
 
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email">Email</label>
 
-                <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
+            <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-                @if (
-                registerForm.get('email')?.invalid &&
-                registerForm.get('email')?.touched
-                ) {
-                <small class="error">
-                    Please enter a valid email address.
-                </small>
-                }
-            </div>
+                <div class="name-row">
 
-            <!-- Password -->
-            <div class="form-group">
-                <label for="password">Password</label>
+                    <div class="form-group">
+                        <label for="firstName">
+                            First name
+                        </label>
 
-                <input id="password" type="password" formControlName="password" placeholder="Enter your password" />
+                        <input id="firstName" type="text" placeholder="John" formControlName="firstName"/>
+                    </div>
 
-                @if (
-                registerForm.get('password')?.invalid &&
-                registerForm.get('password')?.touched
-                ) {
-                <small class="error">
-                    Password must be at least 6 characters.
-                </small>
-                }
-            </div>
 
-            <!-- Confirm Password -->
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
+                    <div class="form-group">
+                        <label for="lastName">
+                            Last name
+                        </label>
 
-                <input id="confirmPassword" type="password" formControlName="confirmPassword"
-                    placeholder="Confirm your password" />
+                        <input id="lastName" type="text" placeholder="Doe" formControlName="lastName" />
+                    </div>
 
-                @if (
-                registerForm.get('confirmPassword')?.invalid &&
-                registerForm.get('confirmPassword')?.touched
-                ) {
-                <small class="error">
-                    Confirm password is required.
-                </small>
-                }
-            </div>
+                </div>
 
-            <button type="submit">
-                Create Account
-            </button>
 
-        </form>
+                <div class="form-group">
+                    <label for="registerEmail">
+                        Email
+                    </label>
 
-        <p class="login-link">
-            Already have an account?
-            <a routerLink="/login">Login</a>
-        </p>
+                    <input id="registerEmail" type="email" placeholder="you@example.com" formControlName="email"/>
+                </div>
 
-    </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input id="registerPassword" type="password" placeholder="Create a password" formControlName="password"/>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        Confirm password
+                    </label>
+
+                    <input id="confirmPassword" type="password" placeholder="Confirm your password" formControlName="confirmPassword" />
+                </div>
+
+
+                <button type="submit" class="submit-button">
+                    Create Account
+                    <span>→</span>
+                </button>
+
+            </form>
+
+
+            <p class="switch-auth">
+                Already have an account?
+                <a routerLink="/login">
+                    Sign in
+                </a>
+            </p>
+
+        </section>
+
+    </main>
+
 </div>

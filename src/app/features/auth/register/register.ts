@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { RegisterRequest } from '../../../models/auth/register-request.model';
 
+
 @Component({
   selector: 'app-register',
   imports: [
@@ -17,19 +18,16 @@ export class Register {
 
   registerForm: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: Auth,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private auth: Auth, private router: Router) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]]
     });
   }
+
 
   onSubmit(): void {
 
@@ -39,17 +37,15 @@ export class Register {
     }
 
     const formData = this.registerForm.value as RegisterRequest;
-
     this.auth.register(formData).subscribe({
       next: (response) => {
-        console.log('Registration successful:', response);
-
         this.router.navigate(['/login']);
       },
 
       error: (error) => {
         console.error('Registration failed:', error);
       }
+
     });
   }
 }
