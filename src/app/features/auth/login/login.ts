@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
 import { LoginRequest } from '../../../models/auth/login-request.model';
@@ -22,7 +22,9 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private auth: Auth,
-    private authState: AuthState
+    private authState: AuthState,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -46,6 +48,13 @@ export class Login {
         this.isLoading = false;
         this.authState.setSession(response.token);
         this.successMessage = 'Login successfull!'
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+        if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')) {
+          this.router.navigateByUrl(returnUrl);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (error) => {
         this.isLoading = false;

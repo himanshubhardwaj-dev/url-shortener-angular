@@ -23,12 +23,12 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
   {
-    path: '**',
-    redirectTo: '',
-  },
-  {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];

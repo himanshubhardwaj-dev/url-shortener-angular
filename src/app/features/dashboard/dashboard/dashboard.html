@@ -1,1 +1,26 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+
+        <div class="brand">
+            <span class="brand-mark">↗</span>
+            <span>Shortly</span>
+        </div>
+
+        <button type="button" class="logout-button" (click)="logout()">
+            Logout
+        </button>
+    </header>
+    <button type="button" (click)="testProtectedApi()">
+        Test Protected API
+    </button>
+
+    <main class="dashboard-content">
+
+        <h1>Welcome to Shortly!</h1>
+
+        <p>Your dashboard is coming soon.</p>
+
+    </main>
+
+</div>
