@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Auth } from '../../../core/services/auth';
 import { LoginRequest } from '../../../models/auth/login-request.model';
 import { LucideEye, LucideEyeOff } from '@lucide/angular';
+import { AuthState } from '../../../core/services/auth-state';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class Login {
   showPassword = false;
   constructor(
     private fb: FormBuilder,
-    private auth: Auth
+    private auth: Auth,
+    private authState: AuthState
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -42,6 +44,7 @@ export class Login {
     this.auth.login(loginData).subscribe({
       next: (response) => {
         this.isLoading = false;
+        this.authState.setSession(response.token);
         this.successMessage = 'Login successfull!'
       },
       error: (error) => {
