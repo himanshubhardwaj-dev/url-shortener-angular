@@ -1,6 +1,7 @@
 <div class="auth-page">
 
     <header class="auth-header">
+
         <a routerLink="/" class="brand">
             <span class="brand-mark">↗</span>
             <span>Shortly</span>
@@ -9,6 +10,7 @@
         <a routerLink="/" class="back-link">
             ← Back to home
         </a>
+
     </header>
 
 
@@ -34,70 +36,155 @@
             </p>
 
 
+            @if (successMessage) {
+
+            <div class="success-message">
+                {{ successMessage }}
+            </div>
+
+            }
+
+
+            @if (errorMessage) {
+
+            <div class="error-message">
+                {{ errorMessage }}
+            </div>
+
+            }
+
+
             <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
                 <div class="name-row">
 
                     <div class="form-group">
+
                         <label for="firstName">
                             First name
                         </label>
 
-                        <input id="firstName" type="text" placeholder="John" formControlName="firstName"/>
+                        <input id="firstName" type="text" placeholder="John" formControlName="firstName" />
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label for="lastName">
                             Last name
                         </label>
 
                         <input id="lastName" type="text" placeholder="Doe" formControlName="lastName" />
+
                     </div>
 
                 </div>
 
 
                 <div class="form-group">
+
                     <label for="registerEmail">
                         Email
                     </label>
 
-                    <input id="registerEmail" type="email" placeholder="you@example.com" formControlName="email"/>
+                    <input id="registerEmail" type="email" placeholder="you@example.com" formControlName="email" />
+
                 </div>
 
 
+                <!-- Password -->
+
                 <div class="form-group">
+
                     <label for="registerPassword">
                         Password
                     </label>
 
-                    <input id="registerPassword" type="password" placeholder="Create a password" formControlName="password"/>
+                    <div class="password-input">
+
+                        <input id="registerPassword" [type]="showPassword ? 'text' : 'password'"
+                            placeholder="Create a password" formControlName="password" />
+
+                        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
+                            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+
+                            @if (showPassword) {
+
+                            <svg lucideEyeOff [size]="18" [strokeWidth]="1.8"></svg>
+
+                            } @else {
+
+                            <svg lucideEye [size]="18" [strokeWidth]="1.8"></svg>
+
+                            }
+
+                        </button>
+
+                    </div>
+
                 </div>
 
 
+                <!-- Confirm Password -->
+
                 <div class="form-group">
+
                     <label for="confirmPassword">
                         Confirm password
                     </label>
 
-                    <input id="confirmPassword" type="password" placeholder="Confirm your password" formControlName="confirmPassword" />
+                    <div class="password-input">
+
+                        <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                            placeholder="Confirm your password" formControlName="confirmPassword" />
+
+                        <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()"
+                            [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+
+                            @if (showConfirmPassword) {
+
+                            <svg lucideEyeOff [size]="18" [strokeWidth]="1.8"></svg>
+
+                            } @else {
+
+                            <svg lucideEye [size]="18" [strokeWidth]="1.8"></svg>
+
+                            }
+
+                        </button>
+
+                    </div>
+
                 </div>
 
 
-                <button type="submit" class="submit-button">
+                <button type="submit" class="submit-button" [disabled]="isLoading">
+
+                    @if (isLoading) {
+
+                    Creating account...
+
+                    } @else {
+
                     Create Account
                     <span>→</span>
+
+                    }
+
                 </button>
 
             </form>
 
 
             <p class="switch-auth">
+
                 Already have an account?
+
                 <a routerLink="/login">
                     Sign in
                 </a>
+
             </p>
 
         </section>

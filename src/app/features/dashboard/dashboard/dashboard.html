@@ -1,26 +1,162 @@
-<div class="dashboard-container">
+<div class="dashboard-layout">
 
-    <header class="dashboard-header">
+    <!-- Sidebar -->
+    <aside class="sidebar">
 
-        <div class="brand">
+        <a routerLink="/" class="brand">
             <span class="brand-mark">↗</span>
             <span>Shortly</span>
+        </a>
+
+        <div class="sidebar-section">
+            <span class="sidebar-label">WORKSPACE</span>
+
+            <nav class="sidebar-nav">
+
+                <a routerLink="/dashboard" class="nav-item active">
+                    <span class="nav-icon">▦</span>
+                    Dashboard
+                </a>
+
+                <a class="nav-item">
+                    <span class="nav-icon">↗</span>
+                    My URLs
+                </a>
+
+                <a class="nav-item">
+                    <span class="nav-icon">▥</span>
+                    Analytics
+                </a>
+
+            </nav>
         </div>
 
-        <button type="button" class="logout-button" (click)="logout()">
-            Logout
-        </button>
-    </header>
-    <button type="button" (click)="testProtectedApi()">
-        Test Protected API
-    </button>
+        <div class="sidebar-bottom">
+            <div class="sidebar-section">
+                <span class="sidebar-label">PREFERENCES</span>
 
-    <main class="dashboard-content">
+                <a class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    Settings
+                </a>
+            </div>
+        </div>
 
-        <h1>Welcome to Shortly!</h1>
+    </aside>
 
-        <p>Your dashboard is coming soon.</p>
 
+    <!-- Main Area -->
+    <main class="dashboard-main">
+
+        <!-- Topbar -->
+        <header class="dashboard-header">
+
+            <div>
+                <span class="header-label">WORKSPACE</span>
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="header-actions">
+
+                <button class="create-button">
+                    <span>+</span>
+                    Create new link
+                </button>
+
+                <div class="user-profile">
+                    <div class="user-avatar">{{userInitial}}</div>
+
+                    <div class="user-info">
+                        <strong>{{currentUser?.email}}</strong>
+                        <span>{{currentUser?.role}}</span>
+                    </div>
+                    <button class="logout-button" (click)="logout()">
+                        Logout
+                    </button>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Dashboard Content -->
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-label">Total URLs</div>
+                <div class="stat-value">{{ dashboardSummary()?.totalUrls ?? 0 }}</div>
+                <div class="stat-description">All your created links</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Clicks</div>
+                <div class="stat-value">{{ dashboardSummary()?.totalClicks ?? 0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Active URLs</div>
+                <div class="stat-value">{{ dashboardSummary()?.activeUrls ?? 0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Expired URLs</div>
+                <div class="stat-value">{{ dashboardSummary()?.expiredUrls ?? 0 }}</div>
+            </div>
+
+        </div>
+        <div class="recent-urls-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Recent URLs</h2>
+                    <p>Your recently created short links.</p>
+                </div>
+            </div>
+
+            @if (isLoading()) {
+            <div class="empty-state">
+                Loading your URLs...
+            </div>
+            } @else if (errorMessage()) {
+            <div class="empty-state">
+                {{ errorMessage() }}
+            </div>
+            } @else if (urls().length === 0) {
+            <div class="empty-state">
+                <h3>No URLs yet</h3>
+                <p>Create your first short link to see it here.</p>
+            </div>
+            } @else {
+            <div class="url-list">
+                @for (url of urls(); track url.shortCode) {
+                <div class="url-item">
+                    <div class="url-details">
+                        <strong>{{ url.shortCode }}</strong>
+
+                        <span>{{ url.originalUrl }}</span>
+
+                        <div class="short-url-row">
+                            <span>{{ baseUrl }}{{ url.shortCode }}</span>
+
+                            <button class="copy-button" (click)="copyShortUrl(url.shortCode)">
+                                {{ copiedShortCode() === url.shortCode ? 'Copied!' : 'Copy' }}
+                            </button>
+                        </div>
+
+                        <span class="expiry-date">
+                            Expires:
+                            {{ url.expiresAt ? (url.expiresAt | date:'mediumDate') : 'Never' }}
+                        </span>
+                    </div>
+
+                    <div class="url-clicks">
+                        {{ url.clickCount }} clicks
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
     </main>
 
 </div>
