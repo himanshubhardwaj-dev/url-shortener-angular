@@ -1,0 +1,103 @@
+<div class="create-page">
+
+    <header class="create-header">
+        <a routerLink="/dashboard" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+        <div class="page-brand">
+            <span class="brand-mark">↗</span>
+            <span>Shortly</span>
+        </div>
+    </header>
+
+    <main class="create-main">
+
+        <div class="page-heading">
+            <span class="eyebrow">URL MANAGEMENT</span>
+            <h1>Create a Short Link</h1>
+            <p>Shorten, customize, and manage your URLs with ease.</p>
+        </div>
+
+        <div class="create-link-container">
+
+            <div class="form-header">
+                <h2>Link Details</h2>
+                <p>Enter the destination URL and customize your short link.</p>
+            </div>
+
+            @if (successResponse(); as response) {
+            <div class="success-message">
+                <h3>Your short link is ready!</h3>
+
+                <div class="short-url-result">
+                    <a [href]="response.shortUrl" target="_blank">
+                        {{ response.shortUrl }}
+                    </a>
+
+                    <button type="button" (click)="copyShortUrl(response.shortUrl)">
+                        Copy
+                    </button>
+                </div>
+            </div>
+            }
+
+            @if (errorMessage()) {
+            <div class="error-message">
+                {{ errorMessage() }}
+            </div>
+            }
+
+            <form [formGroup]="createLinkForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group">
+                    <label for="originalUrl">Original URL <span>*</span></label>
+                    <input id="originalUrl" type="url" formControlName="originalUrl"
+                        placeholder="https://example.com/your-long-url" />
+
+                    @if (createLinkForm.get('originalUrl')?.touched &&
+                    createLinkForm.get('originalUrl')?.invalid) {
+                    <small class="field-error">
+                        Please enter a valid URL starting with http:// or https://.
+                    </small>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="customShortCode">
+                        Custom Short Code <span class="optional">(Optional)</span>
+                    </label>
+                    <input id="customShortCode" type="text" formControlName="customShortCode"
+                        placeholder="my-custom-link" />
+
+                    <small>3–20 characters. Letters, numbers, hyphens and underscores only.</small>
+
+                    @if (createLinkForm.get('customShortCode')?.touched &&
+                    createLinkForm.get('customShortCode')?.invalid) {
+                    <small class="field-error">
+                        Please use 3–20 valid characters.
+                    </small>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="expiresAt">
+                        Expiration Date <span class="optional">(Optional)</span>
+                    </label>
+                    <input id="expiresAt" type="date" formControlName="expiresAt" />
+                    <small>Leave empty if the link should never expire.</small>
+                </div>
+
+                <div class="form-actions">
+                    <a routerLink="/dashboard" class="cancel-button">Cancel</a>
+
+                    <button type="submit" [disabled]="isSubmitting()">
+                        {{ isSubmitting() ? 'Creating...' : 'Create Short Link' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+</div>
