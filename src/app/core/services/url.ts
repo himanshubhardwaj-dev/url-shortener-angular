@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PagedUrlResponse } from '../../models/url/paged-url-response.model';
 import { environemnt } from '../../../environments/environment';
 import { DashboardSummary } from '../../models/url/dashboard-summary.model';
+import { CreateShortUrlRequest, CreateShortUrlResponse } from '../../models/url/create-short-url-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +25,8 @@ export class Url {
     return this.http.get<DashboardSummary>(
       `${this.apiUrl}/dashboard-summary`
     );
+  }
+  create(data: CreateShortUrlRequest): Observable<CreateShortUrlResponse> {
+    return this.http.post<CreateShortUrlResponse>(this.apiUrl, data);
   }
 }
