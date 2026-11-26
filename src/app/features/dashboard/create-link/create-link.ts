@@ -12,8 +12,7 @@ import { CreateShortUrlRequest, CreateShortUrlResponse } from '../../../models/u
   styleUrl: './create-link.scss',
 })
 export class CreateLinkComponent {
-  readonly linkCreated = output<void>();
-  readonly close = output<void>();
+  readonly isCopied = signal(false);
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
   readonly successResponse = signal<CreateShortUrlResponse | null>(null);
@@ -59,7 +58,6 @@ export class CreateLinkComponent {
         this.successResponse.set(response);
         this.isSubmitting.set(false);
         this.createLinkForm.reset();
-        this.linkCreated.emit();
       },
       error: (error) => {
         console.error('Create URL failed:', error);
@@ -75,9 +73,19 @@ export class CreateLinkComponent {
     });
   }
 
-  copyShortUrl(shortUrl: string): void {
-    navigator.clipboard.writeText(shortUrl).catch(() => {
-      this.errorMessage.set('Unable to copy the short URL.');
-    });
+  async copyShortUrl(shortUrl: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+
+      this.isCopied.set(true);
+
+      setTimeout(() => {
+        this.isCopied.set(false);
+      }, 2000);
+
+    } catch (error) {
+      console.error('Unable to copy short URL:', error);
+      this.errorMessage.set('Unable to copy the short URL. Please try again.');
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthState } from '../../../core/services/auth-state';
 import { PagedUrlResponse, UrlListItem } from '../../../models/url/paged-url-response.model';
 import { Url } from '../../../core/services/url';
@@ -10,7 +10,7 @@ import { DashboardSummary } from '../../../models/url/dashboard-summary.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, RouterLinkActive, DatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

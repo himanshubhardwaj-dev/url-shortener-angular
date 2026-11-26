@@ -1,1 +1,147 @@
-<p>url-list works!</p>
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <a routerLink="/" class="brand">
+      <span class="brand-mark">↗</span>
+      <span>Shortly</span>
+    </a>
+
+    <div class="sidebar-section">
+      <span class="sidebar-label">WORKSPACE</span>
+      <nav class="sidebar-nav">
+        <a routerLink="/dashboard" class="nav-item"><span class="nav-icon">▦</span>Dashboard</a>
+        <a routerLink="/dashboard/urls" routerLinkActive="active" class="nav-item"><span class="nav-icon">↗</span>My URLs</a>
+        <a routerLink="/dashboard/analytics" class="nav-item"><span class="nav-icon">▥</span>Analytics</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-section">
+        <span class="sidebar-label">PREFERENCES</span>
+        <a routerLink="/dashboard/settings" class="nav-item"><span class="nav-icon">⚙</span>Settings</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <div>
+        <span class="header-label">WORKSPACE</span>
+        <h1>My URLs</h1>
+      </div>
+      <div class="header-actions">
+        <a routerLink="/dashboard/create" class="create-button"><span>+</span>Create new link</a>
+        <div class="user-profile">
+          <div class="user-avatar">{{ userInitial }}</div>
+          <div class="user-info"><strong>{{ currentUser?.email }}</strong><span>{{ currentUser?.role }}</span></div>
+          <button class="logout-button" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="page-content">
+      <div class="page-heading">
+        <div>
+          <h2>All your short links</h2>
+          <p>Manage, update and track the links you have created.</p>
+        </div>
+        <div class="url-count">{{ totalRecords() }} links</div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <span>⌕</span>
+          <input type="search" placeholder="Search this page by short code or URL..."
+            [ngModel]="searchTerm()" (ngModelChange)="onSearchChange($event)" />
+        </div>
+        <button class="refresh-button" (click)="loadUrls()" [disabled]="isLoading()">↻ Refresh</button>
+      </div>
+
+      @if (successMessage()) {
+        <div class="alert success-alert">{{ successMessage() }}</div>
+      }
+      @if (errorMessage()) {
+        <div class="alert error-alert">{{ errorMessage() }}</div>
+      }
+
+      @if (isLoading()) {
+        <div class="empty-state">Loading your URLs...</div>
+      } @else if (filteredUrls().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">↗</div>
+          <h3>{{ searchTerm() ? 'No matching URLs' : 'No URLs yet' }}</h3>
+          <p>{{ searchTerm() ? 'Try another search term.' : 'Create your first short link to see it here.' }}</p>
+          @if (!searchTerm()) {
+            <a routerLink="/dashboard/create" class="create-button">+ Create your first link</a>
+          }
+        </div>
+      } @else {
+        <div class="url-table-wrap">
+          <table class="url-table">
+            <thead>
+              <tr><th>LINK DETAILS</th><th>CLICKS</th><th>CREATED</th><th>EXPIRES</th><th>ACTIONS</th></tr>
+            </thead>
+            <tbody>
+              @for (url of filteredUrls(); track url.shortCode) {
+                <tr>
+                  <td class="link-cell">
+                    <strong>{{ url.shortCode }}</strong>
+                    <span class="original-url" [title]="url.originalUrl">{{ url.originalUrl }}</span>
+                    <div class="short-link-row">
+                      <a [href]="baseUrl + url.shortCode" target="_blank" rel="noopener">{{ baseUrl }}{{ url.shortCode }}</a>
+                      <button class="copy-button" (click)="copyShortUrl(url.shortCode)">
+                        {{ copiedShortCode() === url.shortCode ? 'Copied!' : 'Copy' }}
+                      </button>
+                    </div>
+                  </td>
+                  <td><span class="click-count">{{ url.clickCount }}</span></td>
+                  <td>{{ url.createdAt | date:'mediumDate' }}</td>
+                  <td>
+                    @if (url.expiresAt) {
+                      <span [class.expired-label]="isExpired(url.expiresAt)">{{ url.expiresAt | date:'mediumDate' }}</span>
+                    } @else {
+                      <span class="never-label">Never</span>
+                    }
+                  </td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="action-button edit-action" (click)="openEdit(url)" title="Edit URL">Edit</button>
+                      <button class="action-button delete-action" (click)="deleteUrl(url)" title="Delete URL">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <span>Page {{ pageNumber() }} of {{ totalPages() }}</span>
+          <div class="pagination-actions">
+            <button (click)="goToPage(pageNumber() - 1)" [disabled]="pageNumber() <= 1">Previous</button>
+            <button (click)="goToPage(pageNumber() + 1)" [disabled]="pageNumber() >= totalPages()">Next</button>
+          </div>
+        </div>
+      }
+    </section>
+  </main>
+</div>
+
+@if (editingUrl(); as selectedUrl) {
+  <div class="modal-backdrop" (click)="closeEdit()">
+    <section class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-title" (click)="$event.stopPropagation()">
+      <div class="modal-heading">
+        <div><span class="header-label">LINK MANAGEMENT</span><h2 id="edit-title">Edit short link</h2></div>
+        <button class="close-button" (click)="closeEdit()" aria-label="Close">×</button>
+      </div>
+      <p class="modal-description">Update the destination URL or change when this link expires.</p>
+      <label for="edit-original-url">Destination URL</label>
+      <input id="edit-original-url" type="url" [ngModel]="editOriginalUrl()" (ngModelChange)="editOriginalUrl.set($event)" />
+      <label for="edit-expiry">Expiration date <span>(optional)</span></label>
+      <input id="edit-expiry" type="date" [ngModel]="editExpiresAt()" (ngModelChange)="editExpiresAt.set($event)" />
+      <div class="modal-footer">
+        <button class="cancel-button" (click)="closeEdit()" [disabled]="isSaving()">Cancel</button>
+        <button class="save-button" (click)="saveEdit()" [disabled]="isSaving()">{{ isSaving() ? 'Saving...' : 'Save changes' }}</button>
+      </div>
+    </section>
+  </div>
+}

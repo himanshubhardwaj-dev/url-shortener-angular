@@ -29,4 +29,14 @@ export class Url {
   create(data: CreateShortUrlRequest): Observable<CreateShortUrlResponse> {
     return this.http.post<CreateShortUrlResponse>(this.apiUrl, data);
   }
+
+  update(shortCode: string, data: { originalUrl: string; expiresAt: string | null }): Observable<void> {
+    return this.http.put<void>(this.apiUrl, data, {
+      params: { shortCode }
+    });
+  }
+
+  delete(shortCode: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${encodeURIComponent(shortCode)}`);
+  }
 }

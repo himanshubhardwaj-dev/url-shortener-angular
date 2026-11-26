@@ -7,6 +7,7 @@ import { DashboardComponent } from './features/dashboard/dashboard/dashboard';
 import { authGuard } from './core/guard/auth-guard';
 import { guestGuard } from './core/guard/guest.guard';
 import { CreateLinkComponent } from './features/dashboard/create-link/create-link';
+import { UrlList } from './features/urls/url-list/url-list';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,11 @@ export const routes: Routes = [
     path: 'login',
     component: Login,
     canActivate: [guestGuard],
+  },
+  {
+    path: 'dashboard/urls',
+    component: UrlList,
+    canActivate: [authGuard],
   },
   {
     path: 'dashboard/create',

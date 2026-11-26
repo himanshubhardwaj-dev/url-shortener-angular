@@ -36,7 +36,7 @@
                     </a>
 
                     <button type="button" (click)="copyShortUrl(response.shortUrl)">
-                        Copy
+                        {{ isCopied() ? 'Copied!' : 'Copy' }}
                     </button>
                 </div>
             </div>
