@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { RegisterRequest } from '../../models/auth/register-request.model';
 import { LoginRequest } from '../../models/auth/login-request.model';
 import { LoginResponse } from '../../models/auth/login-response.model';
+import { ChangePasswordRequest, UpdateProfileRequest, UserProfile } from '../../models/auth/user-profile.model';
 import { environemnt } from '../../../environments/environment';
 
 @Injectable({
@@ -11,12 +12,26 @@ import { environemnt } from '../../../environments/environment';
 })
 export class Auth {
   private readonly apiUrl = `${environemnt.apiUrl}api/Auth`;
+
   constructor(private http: HttpClient) { }
 
   register(data: RegisterRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data);
   }
+
   login(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, data);
+  }
+
+  getProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}/me`);
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/me/profile`, data);
+  }
+
+  changePassword(data: ChangePasswordRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/me/change-password`, data);
   }
 }

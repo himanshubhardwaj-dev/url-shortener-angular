@@ -1,0 +1,156 @@
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <a routerLink="/" class="brand">
+      <span class="brand-mark">↗</span>
+      <span>Shortly</span>
+    </a>
+
+    <div class="sidebar-section">
+      <span class="sidebar-label">WORKSPACE</span>
+      <nav class="sidebar-nav">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
+          <span class="nav-icon">▦</span>Dashboard
+        </a>
+        <a routerLink="/dashboard/urls" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">↗</span>My URLs
+        </a>
+        <a routerLink="/dashboard/analytics" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">▥</span>Analytics
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-section">
+        <span class="sidebar-label">PREFERENCES</span>
+        <a routerLink="/dashboard/settings" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">⚙</span>Settings
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <div>
+        <span class="header-label">PREFERENCES</span>
+        <h1>Settings</h1>
+      </div>
+      <div class="header-actions">
+        <a routerLink="/dashboard/create" class="create-button"><span>+</span>Create new link</a>
+        <div class="user-profile">
+          <div class="user-avatar">{{ userInitial }}</div>
+          <div class="user-info">
+            <strong>{{ profile()?.email }}</strong>
+            <span>{{ profile()?.role || 'User' }}</span>
+          </div>
+          <button class="logout-button" type="button" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="page-heading">
+        <div>
+          <h2>Account settings</h2>
+          <p>Manage your personal information and account security.</p>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-card">Loading your account settings...</div>
+      } @else if (profileError() && !profile()) {
+        <div class="alert error-alert">{{ profileError() }}</div>
+        <button class="secondary-button" type="button" (click)="loadProfile()">Try again</button>
+      } @else {
+        <section class="settings-card">
+          <div class="card-heading">
+            <div class="card-icon">♙</div>
+            <div>
+              <h3>Personal information</h3>
+              <p>Update the name and email address associated with your account.</p>
+            </div>
+          </div>
+
+          @if (profileSuccess()) { <div class="alert success-alert">{{ profileSuccess() }}</div> }
+          @if (profileError()) { <div class="alert error-alert">{{ profileError() }}</div> }
+
+          <form (ngSubmit)="saveProfile()">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="first-name">First name</label>
+                <input id="first-name" name="firstName" type="text" maxlength="100" required [(ngModel)]="firstName" />
+              </div>
+              <div class="form-group">
+                <label for="last-name">Last name</label>
+                <input id="last-name" name="lastName" type="text" maxlength="100" required [(ngModel)]="lastName" />
+              </div>
+              <div class="form-group full-width">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" maxlength="255" required [(ngModel)]="email" />
+                <span class="field-hint">Your email is used to identify your account when signing in.</span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="primary-button" type="submit" [disabled]="isSavingProfile()">
+                {{ isSavingProfile() ? 'Saving...' : 'Save changes' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="settings-card">
+          <div class="card-heading">
+            <div class="card-icon">⌑</div>
+            <div>
+              <h3>Password & security</h3>
+              <p>Choose a strong password that you don't use on other websites.</p>
+            </div>
+          </div>
+
+          @if (passwordSuccess()) { <div class="alert success-alert">{{ passwordSuccess() }}</div> }
+          @if (passwordError()) { <div class="alert error-alert">{{ passwordError() }}</div> }
+
+          <form (ngSubmit)="updatePassword()">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="current-password">Current password</label>
+                <input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required [(ngModel)]="currentPassword" />
+              </div>
+              <div class="form-group">
+                <label for="new-password">New password</label>
+                <input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required [(ngModel)]="newPassword" />
+                <span class="field-hint">At least 8 characters.</span>
+              </div>
+              <div class="form-group">
+                <label for="confirm-password">Confirm new password</label>
+                <input id="confirm-password" name="confirmNewPassword" type="password" autocomplete="new-password" minlength="8" required [(ngModel)]="confirmNewPassword" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="primary-button" type="submit" [disabled]="isChangingPassword()">
+                {{ isChangingPassword() ? 'Updating...' : 'Update password' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="settings-card account-card">
+          <div class="card-heading">
+            <div class="card-icon">◈</div>
+            <div>
+              <h3>Account information</h3>
+              <p>Details about your Shortly account.</p>
+            </div>
+          </div>
+          <div class="account-details">
+            <div class="account-detail"><span>Account ID</span><strong>#{{ profile()?.userId }}</strong></div>
+            <div class="account-detail"><span>Account role</span><strong>{{ profile()?.role }}</strong></div>
+            <div class="account-detail"><span>Member since</span><strong>{{ profile()?.createdAt | date:'mediumDate' }}</strong></div>
+            <div class="account-detail"><span>Account status</span><strong [class.status-active]="profile()?.isActive" [class.status-inactive]="!profile()?.isActive">{{ profile()?.isActive ? 'Active' : 'Inactive' }}</strong></div>
+          </div>
+        </section>
+      }
+    </div>
+  </main>
+</div>

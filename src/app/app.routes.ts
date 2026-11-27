@@ -9,6 +9,7 @@ import { guestGuard } from './core/guard/guest.guard';
 import { CreateLinkComponent } from './features/dashboard/create-link/create-link';
 import { UrlList } from './features/urls/url-list/url-list';
 import { UrlAnalytics } from './features/analytics/url-analytics/url-analytics';
+import { Settings } from './features/settings/settings/settings';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'dashboard/urls', component: UrlList, canActivate: [authGuard] },
   { path: 'dashboard/analytics', component: UrlAnalytics, canActivate: [authGuard] },
+  { path: 'dashboard/settings', component: Settings, canActivate: [authGuard] },
   { path: 'dashboard/create', component: CreateLinkComponent, canActivate: [authGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },

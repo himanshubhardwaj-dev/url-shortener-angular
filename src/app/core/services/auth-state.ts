@@ -52,7 +52,16 @@ export class AuthState {
             return;
         }
 
-        this.currentUserSignal.set(user);
+        const savedEmail = this.tokenStorage.getEmail();
+        this.currentUserSignal.set(savedEmail ? { ...user, email: savedEmail } : user);
+    }
+
+    updateEmail(email: string): void {
+        const currentUser = this.currentUserSignal();
+        if (currentUser) {
+            this.tokenStorage.saveEmail(email);
+            this.currentUserSignal.set({ ...currentUser, email });
+        }
     }
 
     logout(): void {

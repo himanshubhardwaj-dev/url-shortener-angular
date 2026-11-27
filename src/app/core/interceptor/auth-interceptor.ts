@@ -8,8 +8,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenStorage = inject(TokenStorage);
   const token = tokenStorage.getToken();
 
-  console.log('Auth interceptor called:', req.url);
-  console.log('Token found in interceptor:', !!token);
 
   if (!token) {
     return next(req);
@@ -21,7 +19,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }
   });
 
-  console.log('Authorization header attached:', !!authRequest.headers.get('Authorization'));
 
   return next(authRequest);
 };
