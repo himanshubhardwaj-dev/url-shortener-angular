@@ -1,1 +1,195 @@
-<p>url-analytics works!</p>
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <a routerLink="/" class="brand">
+      <span class="brand-mark">↗</span>
+      <span>Shortly</span>
+    </a>
+
+    <div class="sidebar-section">
+      <span class="sidebar-label">WORKSPACE</span>
+      <nav class="sidebar-nav">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
+          <span class="nav-icon">▦</span>Dashboard
+        </a>
+        <a routerLink="/dashboard/urls" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">↗</span>My URLs
+        </a>
+        <a routerLink="/dashboard/analytics" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">▥</span>Analytics
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-section">
+        <span class="sidebar-label">PREFERENCES</span>
+        <a routerLink="/dashboard/settings" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">⚙</span>Settings
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <div>
+        <span class="header-label">PERFORMANCE</span>
+        <h1>Analytics</h1>
+      </div>
+      <div class="header-actions">
+        <a routerLink="/dashboard/create" class="create-button"><span>+</span>Create new link</a>
+        <div class="user-profile">
+          <div class="user-avatar">{{ userInitial }}</div>
+          <div class="user-info">
+            <strong>{{ currentUser?.email }}</strong>
+            <span>{{ currentUser?.role }}</span>
+          </div>
+          <button class="logout-button" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="page-content">
+      <div class="page-heading">
+        <div>
+          <h2>Link performance</h2>
+          <p>Understand how your shortened links are performing.</p>
+        </div>
+        <button class="refresh-button" (click)="loadAnalytics()" [disabled]="isLoading()">
+          ↻ Refresh
+        </button>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert error-alert">{{ errorMessage() }}</div>
+      }
+
+      @if (isLoading()) {
+        <div class="empty-state">Loading your analytics...</div>
+      } @else if (overview(); as data) {
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-icon clicks-icon">↗</span>
+            <div class="stat-label">Total clicks</div>
+            <div class="stat-value">{{ data.summary.totalClicks | number }}</div>
+            <div class="stat-description">Across all your active and expired links</div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon urls-icon">⌁</span>
+            <div class="stat-label">Total links</div>
+            <div class="stat-value">{{ data.summary.totalUrls | number }}</div>
+            <div class="stat-description">Links created by your account</div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon active-icon">✓</span>
+            <div class="stat-label">Active links</div>
+            <div class="stat-value">{{ data.summary.activeUrls | number }}</div>
+            <div class="stat-description">Links that have not expired</div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon average-icon">∅</span>
+            <div class="stat-label">Average clicks per link</div>
+            <div class="stat-value">{{ averageClicks() | number }}</div>
+            <div class="stat-description">Total clicks divided by total links</div>
+          </article>
+        </div>
+
+        <div class="analytics-grid">
+          <section class="panel top-links-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Top performing links</h2>
+                <p>Your five links with the highest click counts.</p>
+              </div>
+              <a routerLink="/dashboard/urls" class="text-link">View all URLs →</a>
+            </div>
+
+            @if (topUrls().length === 0) {
+              <div class="panel-empty">No link activity yet. Share a short link to start collecting clicks.</div>
+            } @else {
+              <div class="top-links-list">
+                @for (url of topUrls(); track url.shortCode; let index = $index) {
+                  <div class="top-link-item">
+                    <div class="top-link-meta">
+                      <span class="rank">{{ index + 1 }}</span>
+                      <div class="top-link-name">
+                        <strong>{{ url.shortCode }}</strong>
+                        <span [title]="url.originalUrl">{{ url.originalUrl }}</span>
+                      </div>
+                      <strong class="top-link-clicks">{{ url.clickCount | number }} clicks</strong>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill" [style.width.%]="getClickPercentage(url.clickCount)"></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+
+          <section class="panel link-health-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Link health</h2>
+                <p>Current status of your links.</p>
+              </div>
+            </div>
+            <div class="health-row">
+              <div class="health-label"><span class="health-dot active-dot"></span>Active links</div>
+              <strong>{{ data.summary.activeUrls }}</strong>
+            </div>
+            <div class="health-track">
+              <div class="health-fill active-fill" [style.width.%]="data.summary.totalUrls ? data.summary.activeUrls / data.summary.totalUrls * 100 : 0"></div>
+            </div>
+            <div class="health-row second-health-row">
+              <div class="health-label"><span class="health-dot expired-dot"></span>Expired links</div>
+              <strong>{{ data.summary.expiredUrls }}</strong>
+            </div>
+            <div class="health-track">
+              <div class="health-fill expired-fill" [style.width.%]="data.summary.totalUrls ? data.summary.expiredUrls / data.summary.totalUrls * 100 : 0"></div>
+            </div>
+            <div class="health-footnote">Status is calculated using each link's expiration date.</div>
+          </section>
+        </div>
+
+        <section class="panel recent-performance-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Link performance details</h2>
+              <p>Click counts and creation dates for your shortened links.</p>
+            </div>
+          </div>
+          @if (data.urls.length === 0) {
+            <div class="panel-empty">You haven't created any short links yet.</div>
+          } @else {
+            <div class="table-wrap">
+              <table class="analytics-table">
+                <thead>
+                  <tr><th>SHORT CODE</th><th>DESTINATION</th><th>CLICKS</th><th>CREATED</th><th>STATUS</th></tr>
+                </thead>
+                <tbody>
+                  @for (url of data.urls; track url.shortCode) {
+                    <tr>
+                      <td><strong class="short-code">{{ url.shortCode }}</strong></td>
+                      <td class="destination-cell" [title]="url.originalUrl">{{ url.originalUrl }}</td>
+                      <td><span class="click-pill">{{ url.clickCount | number }}</span></td>
+                      <td>{{ url.createdAt | date:'mediumDate' }}</td>
+                      <td><span class="status-pill" [class.status-expired]="getUrlStatus(url) === 'Expired'">{{ getUrlStatus(url) }}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+
+        <div class="data-note">
+          <span class="note-icon">ⓘ</span>
+          <p><strong>About your analytics:</strong> These metrics use the click totals currently stored for each URL. Your API does not yet record individual click timestamps, so daily, weekly and monthly traffic charts are not available without adding click-history tracking to the backend.</p>
+        </div>
+      } @else if (!errorMessage()) {
+        <div class="empty-state">No analytics data is available.</div>
+      }
+    </section>
+  </main>
+</div>

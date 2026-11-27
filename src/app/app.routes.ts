@@ -8,39 +8,15 @@ import { authGuard } from './core/guard/auth-guard';
 import { guestGuard } from './core/guard/guest.guard';
 import { CreateLinkComponent } from './features/dashboard/create-link/create-link';
 import { UrlList } from './features/urls/url-list/url-list';
+import { UrlAnalytics } from './features/analytics/url-analytics/url-analytics';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: LandingComponent,
-  },
-  {
-    path: 'register',
-    component: Register,
-    canActivate: [guestGuard],
-  },
-  {
-    path: 'login',
-    component: Login,
-    canActivate: [guestGuard],
-  },
-  {
-    path: 'dashboard/urls',
-    component: UrlList,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'dashboard/create',
-    component: CreateLinkComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: '**',
-    redirectTo: '',
-  },
+  { path: '', component: LandingComponent },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
+  { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'dashboard/urls', component: UrlList, canActivate: [authGuard] },
+  { path: 'dashboard/analytics', component: UrlAnalytics, canActivate: [authGuard] },
+  { path: 'dashboard/create', component: CreateLinkComponent, canActivate: [authGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: '**', redirectTo: '' },
 ];
