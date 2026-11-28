@@ -2351,3 +2351,39 @@
   }
 
 }
+
+/* AUTHENTICATED LANDING-PAGE SHORTENER */
+
+.shorten-button:disabled,
+.url-input-container input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-required {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+  color: #a5a8b5;
+  font-size: 13px;
+}
+
+.auth-required a,
+.short-url-link {
+  color: #a78bfa;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-required a:hover,
+.short-url-link:hover {
+  text-decoration: underline;
+}
+
+.short-url-link {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: #5eead4;
+}

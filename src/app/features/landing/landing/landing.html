@@ -14,13 +14,21 @@
     </div>
     <!-- Navigation Actions -->
     <div class="nav-actions">
-      <a routerLink="/login" class="login-btn">
-        Sign In
-      </a>
-      <a routerLink="/register" class="get-started-btn">
-        Get Started
-        <span>→</span>
-      </a>
+      <ng-container *ngIf="!isAuthenticated; else signedInNavigation">
+        <a routerLink="/login" class="login-btn">
+          Sign In
+        </a>
+        <a routerLink="/register" class="get-started-btn">
+          Get Started
+          <span>→</span>
+        </a>
+      </ng-container>
+      <ng-template #signedInNavigation>
+        <a routerLink="/dashboard" class="get-started-btn">
+          Go to Dashboard
+          <span>→</span>
+        </a>
+      </ng-template>
     </div>
   </div>
 </nav>
@@ -82,26 +90,43 @@
         <span class="link-icon">
           🔗
         </span>
-        <input type="text" placeholder="Paste your long URL here..." [(ngModel)]="longUrl"
-          (keyup.enter)="shortenUrl()" />
-        <button class="shorten-button" type="button" (click)="shortenUrl()">
-          Shorten
-          <span>→</span>
+        <input
+          type="url"
+          placeholder="Paste your long URL here..."
+          [(ngModel)]="longUrl"
+          (keyup.enter)="shortenUrl()"
+          [disabled]="isShortening"
+          aria-label="URL to shorten"
+        />
+        <button
+          class="shorten-button"
+          type="button"
+          (click)="shortenUrl()"
+          [disabled]="isShortening"
+        >
+          {{ isShortening ? 'Shortening...' : 'Shorten' }}
+          <span *ngIf="!isShortening">→</span>
         </button>
       </div>
       <!-- ERROR MESSAGE -->
-      <p *ngIf="errorMessage" class="error-message">
+      <p *ngIf="errorMessage" class="error-message" role="alert">
         {{ errorMessage }}
       </p>
+      <div *ngIf="authRequired" class="auth-required">
+        <a routerLink="/login">Sign in</a>
+        <span>or</span>
+        <a routerLink="/register">create an account</a>
+        <span>to create and save your short links.</span>
+      </div>
       <!-- SUCCESS RESULT -->
       <div *ngIf="shortUrl" class="short-url-result">
         <div>
           <span class="result-label">
             Your short link
           </span>
-          <strong>
+          <a class="short-url-link" [href]="shortUrl" target="_blank" rel="noopener noreferrer">
             {{ shortUrl }}
-          </strong>
+          </a>
         </div>
         <button type="button" class="copy-button" (click)="copyShortUrl()">
           {{ copied ? 'Copied!' : 'Copy' }}
@@ -111,7 +136,7 @@
       <div class="preview-footer">
         <span>⚡ Fast & secure</span>
         <span class="separator">•</span>
-        <span>No registration required</span>
+        <span>Sign in required · Links saved to your account</span>
       </div>
     </div>
   </div>
